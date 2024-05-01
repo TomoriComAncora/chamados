@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../../assets/logo.png"
+import logo from "../../assets/logo.png";
 
 function SignUp() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+
+  const handleCadastrar = (e) => {
+    e.preventDefault();
+    if (nome != "" && email != "" && senha != "") {
+      alert("Faça o cadastro");
+    }
+  };
 
   return (
     <div className="container">
@@ -13,7 +20,7 @@ function SignUp() {
         <div className="login-area">
           <img src={logo} alt="logo" />
         </div>
-        <form>
+        <form onSubmit={handleCadastrar}>
           <h1>Nova conta</h1>
           <input
             type="text"
