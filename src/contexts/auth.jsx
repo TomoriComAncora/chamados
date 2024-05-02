@@ -1,10 +1,13 @@
 import { useState, useEffect, createContext } from "react";
-import {auth, db} from '../'
+import { auth, db } from "../services/firebaseConnection";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export const AuthContext = createContext({});
 
 function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null);
+  const [carregando, setCarregando] = useState(false);
 
   const logar = (email, senha) => {
     console.log(email, senha);
@@ -12,10 +15,31 @@ function AuthProvider({ children }) {
   };
 
   //cadastrar novo usuario
-  const cadastrar = (email, senha, nome) =>{
-    console.log(nome);
-  }
+  const cadastrar = async (email, senha, nome) => {
+    setCarregando(true);
+    await createUserWithEmailAndPassword(auth, email, senha)
+      .then(async (value) => {
+        let uid = value.user.uid;
 
+        await setDoc(doc(db, "usuarios", uid), {
+          nome: nome,
+          avatarUrl: null,
+        }).then(() => {
+          let dados = {
+            uid: uid,
+            nome: nome,
+            email: value.user.email,
+            avatarUrl: null
+          }
+
+          setUsuario(dados);
+          setCarregando(false);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <AuthContext.Provider
@@ -24,6 +48,7 @@ function AuthProvider({ children }) {
         usuario,
         logar,
         cadastrar,
+        carregando,
       }}
     >
       {children}
