@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext } from "react";
+import {auth, db} from '../'
 
 export const AuthContext = createContext({});
 
@@ -10,12 +11,19 @@ function AuthProvider({ children }) {
     alert("Usuario logado");
   };
 
+  //cadastrar novo usuario
+  const cadastrar = (email, senha, nome) =>{
+    console.log(nome);
+  }
+
+
   return (
     <AuthContext.Provider
       value={{
         logado: !!usuario, //falso porque começa com null
         usuario,
-        logar
+        logar,
+        cadastrar,
       }}
     >
       {children}

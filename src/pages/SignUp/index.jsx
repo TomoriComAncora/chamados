@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import {AuthContext} from "../../contexts/auth";
 
 function SignUp() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
+  const { cadastrar } = useContext(AuthContext);
+
   const handleCadastrar = (e) => {
     e.preventDefault();
     if (nome != "" && email != "" && senha != "") {
-      alert("Faça o cadastro");
+      cadastrar(email, senha, nome);
     }
   };
 
