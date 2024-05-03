@@ -1,7 +1,12 @@
 import { useState, useEffect, createContext } from "react";
 import { auth, db } from "../services/firebaseConnection";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const AuthContext = createContext({});
 
@@ -9,9 +14,37 @@ function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null);
   const [carregando, setCarregando] = useState(false);
 
-  const logar = (email, senha) => {
-    console.log(email, senha);
-    alert("Usuario logado");
+  const navigate = useNavigate();
+
+  const logar = async (email, senha) => {
+    setCarregando(true);
+    // console.log(carregando)
+    await signInWithEmailAndPassword(auth, email, senha)
+      .then(async (value) => {
+        let uid = value.user.uid;
+
+        const docRef = doc(db, "usuarios", uid);
+        const docResp = await getDoc(docRef);
+
+        let dados = {
+          uid: uid,
+          nome: docResp.data().nome,
+          emai: value.user.email,
+          avatarUrl: docResp.data().avatarUrl,
+        };
+
+        setUsuario(dados);
+        storageDeUsuario(dados);
+        setCarregando(false);
+        toast.success("Seja bem-vindo(a) de volta");
+        navigate("/dashboard");
+        // console.log(carregando);
+      })
+      .catch((error) => {
+        console.log(error);
+        setCarregando(false);
+        toast.error("Erro ao logar!");
+      });
   };
 
   //cadastrar novo usuario
@@ -29,16 +62,23 @@ function AuthProvider({ children }) {
             uid: uid,
             nome: nome,
             email: value.user.email,
-            avatarUrl: null
-          }
+            avatarUrl: null,
+          };
 
           setUsuario(dados);
+          storageDeUsuario(dados);
           setCarregando(false);
+          toast.success("Seja bem-vindo ao sistema!");
+          navigate("/dashboard");
         });
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const storageDeUsuario = (data) => {
+    localStorage.setItem("@usuarios", JSON.stringify(data));
   };
 
   return (

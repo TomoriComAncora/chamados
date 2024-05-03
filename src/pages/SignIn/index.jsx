@@ -8,12 +8,12 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  const { logar } = useContext(AuthContext);
+  const { logar, carregando } = useContext(AuthContext);
 
-  const handleLogar = (e) => {
+  const handleLogar = async(e) => {
     e.preventDefault();
     if(email !== "" && senha !== ""){
-      logar(email, senha);
+      await logar(email, senha);
     }
   };
 
@@ -39,7 +39,7 @@ function SignIn() {
             onChange={(e) => setSenha(e.target.value)}
           />
 
-          <button type="submit">Entrar</button>
+          <button type="submit">{carregando ? "Carregando..." : "Entrar"}</button>
         </form>
         <Link to={"/registrar"}>Criar uma conta</Link>
       </div>
