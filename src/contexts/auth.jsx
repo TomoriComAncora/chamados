@@ -13,8 +13,20 @@ export const AuthContext = createContext({});
 function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null);
   const [carregando, setCarregando] = useState(false);
+  const [carregar, setCarregar] = useState(true);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storageDoUsuario = localStorage.getItem("@usuarios");
+
+    if (storageDoUsuario) {
+      setUsuario(JSON.parse(storageDoUsuario));
+      setCarregar(false);
+    }
+
+    setCarregar(false);
+  }, []);
 
   const logar = async (email, senha) => {
     setCarregando(true);
@@ -84,11 +96,12 @@ function AuthProvider({ children }) {
   return (
     <AuthContext.Provider
       value={{
-        logado: !!usuario, //falso porque começa com null
+        logado: !!usuario, //falso porque começa com null, converte para boolean
         usuario,
         logar,
         cadastrar,
         carregando,
+        carregar,
       }}
     >
       {children}
