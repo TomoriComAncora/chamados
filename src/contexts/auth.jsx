@@ -3,6 +3,7 @@ import { auth, db } from "../services/firebaseConnection";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
@@ -93,6 +94,12 @@ function AuthProvider({ children }) {
     localStorage.setItem("@usuarios", JSON.stringify(data));
   };
 
+  const sair = async()=>{
+    await signOut(auth);
+    localStorage.removeItem("@usuarios");
+    setUsuario(null);
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -100,6 +107,7 @@ function AuthProvider({ children }) {
         usuario,
         logar,
         cadastrar,
+        sair,
         carregando,
         carregar,
       }}
