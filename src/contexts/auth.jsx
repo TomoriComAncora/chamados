@@ -110,6 +110,8 @@ function AuthProvider({ children }) {
         sair,
         carregando,
         carregar,
+        storageDeUsuario,
+        setUsuario
       }}
     >
       {children}
