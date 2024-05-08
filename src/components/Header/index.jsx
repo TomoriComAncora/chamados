@@ -25,7 +25,7 @@ function Header() {
         Clientes
       </Link>
 
-      <Link to={"/configuracoes"}>
+      <Link to={"/perfil"}>
         <FiSettings color='#fff' size={24}/>
         Configurações
       </Link>
