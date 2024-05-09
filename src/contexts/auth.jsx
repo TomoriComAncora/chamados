@@ -42,7 +42,7 @@ function AuthProvider({ children }) {
         let dados = {
           uid: uid,
           nome: docResp.data().nome,
-          emai: value.user.email,
+          email: value.user.email,
           avatarUrl: docResp.data().avatarUrl,
         };
 
