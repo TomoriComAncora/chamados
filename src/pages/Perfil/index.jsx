@@ -8,6 +8,7 @@ import { AuthContext } from "../../contexts/auth";
 
 import { db, storage } from "../../services/firebaseConnection";
 import { doc, updateDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./Perfil.css";
 
 import { toast } from "react-toastify";
@@ -31,22 +32,54 @@ function Perfil() {
     }
   };
 
+  const handleUpload = async () => {
+    const idAtual = usuario.uid;
+
+    const uploadRef = ref(storage, `imagens/${idAtual}/${avatarImagem.name}`);
+    const upload = uploadBytes(uploadRef, avatarImagem).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then(async (downloadURL) => {
+        let urlFoto = downloadURL;
+
+        const docRef = doc(db, "usuarios", usuario.uid);
+
+        await updateDoc(docRef, {
+          avatarUrl: urlFoto,
+          nome: nome,
+        }).then(() => {
+          let dados = {
+            ...usuario,
+            nome: nome,
+            avatarUrl: urlFoto,
+          };
+
+          storageDeUsuario(dados);
+          setUsuario(dados);
+          toast.success("Dados atualizados com sucesso");
+        });
+      });
+    });
+  };
+
   const handleSalvar = async (e) => {
     e.preventDefault();
     // aualizar só o usuario
-    const docRef = doc(db, "usuarios", usuario.uid);
-    await updateDoc(docRef, {
-      nome: nome,
-    }).then(() => {
-      let dados = {
-        ...usuario,
+    if (avatarImagem === null && nome !== "") {
+      const docRef = doc(db, "usuarios", usuario.uid);
+      await updateDoc(docRef, {
         nome: nome,
-      };
+      }).then(() => {
+        let dados = {
+          ...usuario,
+          nome: nome,
+        };
 
-      storageDeUsuario(dados);
-      setUsuario(dados);
-      toast.success("Nome alterado com sucesso");
-    });
+        storageDeUsuario(dados);
+        setUsuario(dados);
+        toast.success("Nome alterado com sucesso");
+      });
+    } else if (nome !== "" && avatarImagem !== null) {
+      handleUpload();
+    }
   };
 
   return (
