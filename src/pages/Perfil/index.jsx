@@ -89,7 +89,7 @@ function Perfil() {
         <Titulo name={"Minha conta"}>
           <FiSettings size={25} />
         </Titulo>
-        <div className="container-profile">
+        <div className="container">
           <form className="form-profile" onSubmit={handleSalvar}>
             <label className="form-avatar">
               <span>

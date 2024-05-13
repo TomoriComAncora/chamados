@@ -18,7 +18,7 @@ function SignIn() {
   };
 
   return (
-    <div className="container">
+    <div className="container-center">
       <div className="login">
         <div className="login-area">
           <img src={logo} alt="logo" />
