@@ -45,55 +45,72 @@ table tr {
   padding: 2em;
 }
 
-table th, table td{
-    padding: .5em;
-    text-align: center;
+table th,
+table td {
+  padding: 0.5em;
+  text-align: center;
 }
 
-table th{
-    font-size: 1em;
-    letter-spacing: .1em;
-    text-transform: uppercase;
+table th {
+  font-size: 1em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-table td .acoes{
+table td .acoes {
+  border: none;
+  padding: 5px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: 3px;
+}
+
+table td .acoes svg {
+  vertical-align: middle;
+}
+
+table td .status {
+  padding: 3px;
+  border-radius: 3px;
+  color: #fff;
+}
+
+@media screen and (max-width: 490px) {
+  table {
+    border: 0;
+  }
+
+  table caption {
+    font-size: 1.3rem;
+  }
+
+  table thead {
     border: none;
-    padding: 5px;
-    border-radius: 4px;
-    display: inline-block;
-    margin-right: 3px;
-}
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
 
-table td .acoes svg{
-    vertical-align: middle;
-}
+  table tr {
+    border-bottom: 3px solid #ccc;
+    display: block;
+    margin: 0.6em;
+  }
 
-table td .status{
-    padding: 3px;
-    border-radius: 3px;
-    color: #fff;
-}
+  table td{
+    border-bottom: 1px solid #ccc;
+    display: block;
+    font-size: .8em;
+    text-align: right;
+  }
 
-@media screen  and (max-width: 490px){
-    table{
-        border: 0;
-    }
-
-    table caption{
-        font-size: 1.3rem;
-    }
-
-    table thead{
-        border: none;
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        width: 1px;
-    }
-
-    table td{
-        
-    }
+  table td::before{
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
 }
