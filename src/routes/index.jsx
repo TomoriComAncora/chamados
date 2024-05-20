@@ -5,6 +5,7 @@ import Dashboard from "../pages/Dashboard";
 import Perfil from "../pages/Perfil";
 import Clientes from "../pages/Clientes";
 import Privado from "./Privado";
+import Novo from "../pages/Novo";
 
 function RoutesApp() {
   return (
@@ -14,6 +15,7 @@ function RoutesApp() {
       <Route path="/dashboard" element={<Privado> <Dashboard/> </Privado>}/>
       <Route path="/perfil" element={<Privado> <Perfil/> </Privado>}/>
       <Route path="/clientes" element={<Privado> <Clientes/> </Privado>}/>
+      <Route path="/novo" element={<Privado> <Novo/> </Privado>}/>
     </Routes>
   );
 }
