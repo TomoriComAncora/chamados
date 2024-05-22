@@ -26,7 +26,10 @@ function Dashboard() {
 
   const [chamado, setChamado] = useState([]);
   const [carregando, setCarregando] = useState(true);
+
   const [vazia, setVazia] = useState(false);
+  const [ultimoItem, setUltimoItem] = useState();
+  const [carregarMais, setCarregarMais] = useState(false);
 
   useEffect(() => {
     const carregarChamados = async () => {
@@ -61,11 +64,29 @@ function Dashboard() {
         });
       });
 
+      const ultimoItem = querySnapshot.docs[querySnapshot.docs.length - 1]; //Pegando o ultimo item
+      console.log(ultimoItem);
+
       setChamado((chamados) => [...chamados, ...lista]);
       console.log(chamado);
+      setUltimoItem(ultimoItem);
     } else {
       setVazia(true);
     }
+
+    setCarregarMais(false);
+  };
+
+  const handleMaisItens = async () => {
+    setCarregarMais(true);
+    const q = query(
+      listaRef,
+      orderBy("criadoEm", "desc"),
+      startAfter(ultimoItem),
+      limit(5)
+    );
+    const querysnapshot = await getDocs(q);
+    await atualizaState(querysnapshot);
   };
 
   if (carregando) {
@@ -149,6 +170,15 @@ function Dashboard() {
                   ))}
                 </tbody>
               </table>
+
+              {carregarMais && (
+                <h3 id="buscandoMais">Buscando mais chamados...</h3>
+              )}
+              {!carregarMais && !vazia && (
+                <button className="carregarMais" onClick={handleMaisItens}>
+                  Buscar mais
+                </button>
+              )}
             </>
           )}
         </>

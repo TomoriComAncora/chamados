@@ -81,6 +81,20 @@ table td .status {
   color: #fff;
 }
 
+.carregarMais{
+  margin: 1.5em 0;
+  padding: .5em 1em;
+  background-color: #181c2e;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 1.1em;
+}
+
+#buscandoMais{
+  margin: 1.5em 0;
+}
+
 @media screen and (max-width: 490px) {
   table {
     border: 0;
