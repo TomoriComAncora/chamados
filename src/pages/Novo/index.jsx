@@ -18,7 +18,7 @@ function Novo() {
   const [clientes, setCleintes] = useState([]);
   const [clienteSelecionado, setClienteSelecionado] = useState(0);
   const [carregandoClientes, setCarregandoClientes] = useState(true);
-  const [assunto, setAssunto] = useState("Escolha");
+  const [assunto, setAssunto] = useState("Suporte");
   const [status, setStatus] = useState("Em aberto");
   const [complemento, setComplemento] = useState("");
 
@@ -70,7 +70,7 @@ function Novo() {
 
   const handleRegistrar = async (e) =>{
     e.preventDefault();
-    if(assunto !== "" && status !== ""){
+
       await addDoc(collection(db, "chamados"), {
         criadoEm: new Date(),
         criadoPor: usuario.nome,
@@ -90,9 +90,6 @@ function Novo() {
         console.log(err);
         toast.error("Erro ao criar chamado!");
       })
-    }else{
-      toast.error("Erro ao criar chamado!");
-    }
   }
 
   return (
@@ -121,7 +118,6 @@ function Novo() {
 
             <label>Assunto</label>
             <select value={assunto} onChange={handleSelect}>
-              <option >Escolha</option>
               <option value="Suporte">Suporte</option>
               <option value="Visita Tecnica">Visita Técnica</option>
               <option value="Financeiro">Financeiro</option>
