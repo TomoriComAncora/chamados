@@ -146,7 +146,10 @@ function Dashboard() {
                       <td data-label="status">
                         <span
                           className="status"
-                          style={{ background: "#cecece" }}
+                          style={{
+                            background:
+                              item.status === "Aberto" ? "#5cb85c" : "#999",
+                          }}
                         >
                           {item.status}
                         </span>
@@ -159,12 +162,13 @@ function Dashboard() {
                         >
                           <FiSearch color="#fff" size={17} />
                         </button>
-                        <button
+                        <Link
+                          to={`/novo/${item.id}`}
                           className="acoes"
                           style={{ backgroundColor: "#f6a935" }}
                         >
                           <FiEdit2 color="#fff" size={17} />
-                        </button>
+                        </Link>
                       </td>
                     </tr>
                   ))}

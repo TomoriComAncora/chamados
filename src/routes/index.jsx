@@ -16,6 +16,7 @@ function RoutesApp() {
       <Route path="/perfil" element={<Privado> <Perfil/> </Privado>}/>
       <Route path="/clientes" element={<Privado> <Clientes/> </Privado>}/>
       <Route path="/novo" element={<Privado> <Novo/> </Privado>}/>
+      <Route path="/novo/:id" element={<Privado> <Novo/> </Privado>}/>
     </Routes>
   );
 }

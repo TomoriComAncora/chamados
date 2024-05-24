@@ -4,8 +4,16 @@ import Titulo from "../../components/Titulo";
 import { FiPlusCircle } from "react-icons/fi";
 
 import { AuthContext } from "../../contexts/auth";
+import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { db } from "../../services/firebaseConnection";
-import { collection, getDocs, getDoc, doc, addDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  addDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 import "./Novo.css";
 import { toast } from "react-toastify";
@@ -14,6 +22,8 @@ const listaRef = collection(db, "clientes");
 
 function Novo() {
   const { usuario } = useContext(AuthContext);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const [clientes, setCleintes] = useState([]);
   const [clienteSelecionado, setClienteSelecionado] = useState(0);
@@ -21,20 +31,22 @@ function Novo() {
   const [assunto, setAssunto] = useState("Suporte");
   const [status, setStatus] = useState("Em aberto");
   const [complemento, setComplemento] = useState("");
+  const [idCliente, setIdCliente] = useState(false);
 
   useEffect(() => {
+    console.log(id);
     const carregarClientes = async () => {
       const querrySnapshot = await getDocs(listaRef)
         .then((snapShot) => {
           let lista = [];
-          snapShot.forEach((doc)=>{
+          snapShot.forEach((doc) => {
             lista.push({
-                id: doc.id,
-                nomeFantasia: doc.data().nomeFantasia,
-            })
-          })
+              id: doc.id,
+              nomeFantasia: doc.data().nomeFantasia,
+            });
+          });
 
-          if(snapShot.docs.size === 0){
+          if (snapShot.docs.size === 0) {
             console.log("nenhuma empresa encontrada");
             setCleintes([{ id: 1, nomeFantasia: teste }]);
             setCarregandoClientes(false);
@@ -42,6 +54,10 @@ function Novo() {
           }
           setCleintes(lista);
           setCarregandoClientes(false);
+
+          if (id) {
+            carregarId(lista);
+          }
         })
         .catch((err) => {
           console.log("Erro ao buscar no banco de dados", err);
@@ -51,7 +67,28 @@ function Novo() {
     };
 
     carregarClientes();
-  }, []);
+  }, [id]);
+
+  const carregarId = async (lista) => {
+    const docRef = doc(db, "chamados", id);
+    await getDoc(docRef)
+      .then((snapshot) => {
+        setAssunto(snapshot.data().assunto);
+        setStatus(snapshot.data().status);
+        setComplemento(snapshot.data().complemento);
+
+        let index = lista.findIndex(
+          (item) => item.id === snapshot.data().clienteId
+        );
+
+        setClienteSelecionado(index);
+        setIdCliente(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIdCliente(false);
+      });
+  };
 
   const handleOpcoes = (e) => {
     setStatus(e.target.value);
@@ -63,58 +100,81 @@ function Novo() {
     console.log(e.target.value);
   };
 
-  const handleClientes = (e) =>{
+  const handleClientes = (e) => {
     setClienteSelecionado(e.target.value);
     console.log(clientes[e.target.value].nomeFantasia);
-  }
+  };
 
-  const handleRegistrar = async (e) =>{
+  const handleRegistrar = async (e) => {
     e.preventDefault();
 
-      await addDoc(collection(db, "chamados"), {
-        criadoEm: new Date(),
-        criadoPor: usuario.nome,
+    if (idCliente) {
+      const docRef = doc(db, "chamados", id);
+      await updateDoc(docRef, {
         cliente: clientes[clienteSelecionado].nomeFantasia,
         clienteId: clientes[clienteSelecionado].id,
         assunto: assunto,
         complemento: complemento,
         status: status,
         userId: usuario.uid,
-      }).then(()=>{
+      })
+        .then(() => {
+          toast.info("Chamado atualizado com sucesso!");
+          setClienteSelecionado(0);
+          setComplemento("");
+          navigate("/dashboard");
+        })
+        .catch((err) => {
+          toast.error("Erro ao atualizar o chamado!");
+          console.log(err);
+        });
+      return;
+    }
+
+    await addDoc(collection(db, "chamados"), {
+      criadoEm: new Date(),
+      criadoPor: usuario.nome,
+      cliente: clientes[clienteSelecionado].nomeFantasia,
+      clienteId: clientes[clienteSelecionado].id,
+      assunto: assunto,
+      complemento: complemento,
+      status: status,
+      userId: usuario.uid,
+    })
+      .then(() => {
         toast.success("Chamado criado com sucesso!");
         setClienteSelecionado(0);
         setAssunto("");
         setComplemento("");
         setStatus("");
-      }).catch((err)=>{
+      })
+      .catch((err) => {
         console.log(err);
         toast.error("Erro ao criar chamado!");
-      })
-  }
+      });
+  };
 
   return (
     <div>
       <Header />
       <div className="content">
-        <Titulo name={"Novo Chamado"}>
+        <Titulo name={id ? "Editando chamado" : "Novo chamado"}>
           <FiPlusCircle size={25} />
         </Titulo>
         <div className="container">
           <form className="form-profile" onSubmit={handleRegistrar}>
             <label>Clientes</label>
-            {
-                carregandoClientes ? (
-                    <input type="text" disabled={true} value={"Carregando..."}/>
-                ):(
-                    <select value={clienteSelecionado} onChange={handleClientes}>
-                        {clientes.map((item, index)=>(
-                            <option key={index} value={index}>
-                                {item.nomeFantasia}
-                            </option>
-                        ))}
-                    </select>
-                )
-            }
+            {carregandoClientes ? (
+              <input type="text" disabled={true} value={"Carregando..."} />
+            ) : (
+              <select value={clienteSelecionado} onChange={handleClientes}>
+                {clientes.map((item, index) => (
+                  <option key={index} value={index}>
+                    {item.nomeFantasia}
+                  </option>
+                ))}
+              </select>
+            )}
 
             <label>Assunto</label>
             <select value={assunto} onChange={handleSelect}>
