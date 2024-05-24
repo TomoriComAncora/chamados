@@ -2,9 +2,10 @@ import { useState, useEffect, useContext } from "react";
 import Header from "../../components/Header";
 import Titulo from "../../components/Titulo";
 import { FiPlusCircle } from "react-icons/fi";
+import { format } from "date-fns";
 
 import { AuthContext } from "../../contexts/auth";
-import { useParams, Navigate, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { db } from "../../services/firebaseConnection";
 import {
   collection,
@@ -117,6 +118,8 @@ function Novo() {
         complemento: complemento,
         status: status,
         userId: usuario.uid,
+        editadoPor: usuario.nome,
+        editadoEm: new Date(),
       })
         .then(() => {
           toast.info("Chamado atualizado com sucesso!");
