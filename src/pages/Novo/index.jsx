@@ -136,6 +136,8 @@ function Novo() {
 
     await addDoc(collection(db, "chamados"), {
       criadoEm: new Date(),
+      editadoEm: null,
+      editadoPor: "",
       criadoPor: usuario.nome,
       cliente: clientes[clienteSelecionado].nomeFantasia,
       clienteId: clientes[clienteSelecionado].id,

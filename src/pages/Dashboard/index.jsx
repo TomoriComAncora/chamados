@@ -18,6 +18,7 @@ import { FiEdit2, FiMessageSquare, FiPlus, FiSearch } from "react-icons/fi";
 
 import "./dashboard.css";
 import { format } from "date-fns";
+import Modal from "../../components/Modal";
 
 const listaRef = collection(db, "chamados");
 
@@ -30,6 +31,9 @@ function Dashboard() {
   const [vazia, setVazia] = useState(false);
   const [ultimoItem, setUltimoItem] = useState();
   const [carregarMais, setCarregarMais] = useState(false);
+
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [detalhes, setDetalhes] = useState();
 
   useEffect(() => {
     const carregarChamados = async () => {
@@ -59,6 +63,8 @@ function Dashboard() {
           criadoEm: doc.data().criadoEm,
           criadoEmFormat: format(doc.data().criadoEm.toDate(), "dd/MM/yyyy"),
           criadoPor: doc.data().criadoPor,
+          editadoEm: doc.data().editadoEm,
+          editadoPor: doc.data().editadoPor,
           status: doc.data().status,
           complemento: doc.data().complemento,
         });
@@ -87,6 +93,11 @@ function Dashboard() {
     );
     const querysnapshot = await getDocs(q);
     await atualizaState(querysnapshot);
+  };
+
+  const handleDetalhes = (item) => {
+    setMostrarModal(!mostrarModal);
+    setDetalhes(item);
   };
 
   if (carregando) {
@@ -159,6 +170,7 @@ function Dashboard() {
                         <button
                           className="acoes"
                           style={{ backgroundColor: "#3583f6" }}
+                          onClick={() => handleDetalhes(item)}
                         >
                           <FiSearch color="#fff" size={17} />
                         </button>
@@ -187,6 +199,8 @@ function Dashboard() {
           )}
         </>
       </div>
+
+      {mostrarModal && <Modal conteudo={detalhes} fechar={()=> setMostrarModal(!mostrarModal)}/>}
     </div>
   );
 }
