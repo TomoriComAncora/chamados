@@ -61,7 +61,7 @@ function Modal({ fechar, conteudo }) {
               </span>
             </div>
 
-            <div className="detalhes">
+            <div className="detalhes edicao">
               <span>
                 Editado em:
                 <i>{dataFormatada}</i>

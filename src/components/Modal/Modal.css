@@ -73,3 +73,30 @@
   border-radius: 5px;
   min-width: 540px;
 }
+
+@media screen and (max-width: 490px) {
+  .modal .container {
+    max-width: 550px;
+    top: 5%;
+    left: 5%;
+    right: 5%;
+  }
+
+  .fechar {
+    gap: 2px;
+    padding: 2px 7px;
+  }
+
+  .infos {
+    min-width:100%;
+  }
+
+  .infos .edicao{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .infos .edicao span{
+    margin-bottom: .5em;
+  }
+}
